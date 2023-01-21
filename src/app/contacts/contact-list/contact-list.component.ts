@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Contact } from '../contact.model';
 @Component({
   selector: 'cms-contact-list',
@@ -6,6 +6,13 @@ import { Contact } from '../contact.model';
   styleUrls: ['./contact-list.component.scss'],
 })
 export class ContactListComponent {
+  @Output() selectedContactEvent: EventEmitter<Contact> =
+    new EventEmitter<Contact>();
+
+  onSelected(contact: Contact): void {
+    this.selectedContactEvent.emit(contact);
+  }
+
   contacts: Contact[] = [
     {
       id: '1',

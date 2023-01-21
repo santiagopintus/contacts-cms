@@ -1,0 +1,9 @@
+/* PANEL HEADING */
+  .panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2 {
+      margin: 0;
+    }
+  }
