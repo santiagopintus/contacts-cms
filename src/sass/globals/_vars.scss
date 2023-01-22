@@ -1,0 +1,51 @@
+// COLORS
+// https://coolors.co/3256a4-e6e6e6-7bad76-f2bd5a-e3664f-39393a
+$darkGray: #39393A;
+$blue: #3256a4;
+$red: #dc5f48;
+$yellow:#daa646;
+$green:#80917E;
+$black: #172B36;
+$white: #E6E6E6;
+
+/* APPLIED COLORS */
+$primary: $blue;
+$secondary: $red;
+$secondary-2: $yellow;
+$secondary-3: $green;
+$shade: $darkGray;
+$textColor: $black;
+$inputBg: $white;
+
+/* FONT SIZES */
+$fs: 1.6rem;
+
+$h1Fs: 2.8rem;
+$h2Fs: 2.4rem;
+$h3Fs: 2rem;
+$h4Fs: 1.8rem;
+$h1FsDesktop: 3.2rem;
+$h2FsDesktop: 2.8rem;
+$h3FsDesktop: 2.4rem;
+$h4FsDesktop: 2rem;
+
+/* FONT FAMILIES */
+$font: 'Lato', sans-serif;
+$titleFont: $font;
+
+/* BREAKPOINTS */
+$mobileMin: 480px;
+$tabletMin: 768px;
+$desktopMin: 1024px;
+$largeMin: 1440px;
+
+/* BORDER */
+$borderRadius: .8rem;
+$btnRadius:.4rem;
+
+/* SHADOWS */
+$primaryShadow: 0 0 3px 0 rgba(0,0,0,.4);
+$hoverShadow: 0 2px 5px 0 rgba(0,0,0,.2);
+
+/* Transitions */
+$transitionAll: all 200ms ease;

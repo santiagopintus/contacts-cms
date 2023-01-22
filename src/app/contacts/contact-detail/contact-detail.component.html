@@ -1,18 +1,22 @@
-<div class="panel panel-default contact-detail">
-  <div class="panel-heading">
-    <h2>Contact name here</h2>
-    <div class="clearfix">
-      <div class="pull-left">
-        <img src="{{contact.imageUrl}}" alt="An actual img here" class="img-responsive" />
+<div class="panel panel-default">
+  <div class="panel-heading contact-detail">
+    <h2>{{ contact.name }}</h2>
+    <div class="img-buttons">
+      <div>
+        <img
+          src="{{ contact.imageUrl }}"
+          alt="An actual img here"
+          class="img-responsive"
+        />
       </div>
-      <div class="pull-right">
+      <div>
         <button class="btn btn-primary" style="margin-right: 5px">Edit</button>
         <button class="btn btn-danger">Delete</button>
       </div>
     </div>
   </div>
   <div class="panel-body">
-    <p><strong>Email:</strong> {{contact.email}}</p>
-    <p><strong>Phone:</strong> {{contact.phone}}</p>
+    <p><strong>Email:</strong> {{ contact.email }}</p>
+    <p><strong>Phone:</strong> {{ contact.phone }}</p>
   </div>
 </div>

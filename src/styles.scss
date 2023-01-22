@@ -1,9 +1,16 @@
+/* Global styles */
+@import "sass/globals/mixins";
+
 /* PANEL HEADING */
-  .panel-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    h2 {
-      margin: 0;
-    }
+.panel-heading:not(.contact-detail), .contact-detail .img-buttons {
+  @include flex-between;
+  h2 {
+    margin: 0;
   }
+}
+
+.navbar-nav {
+  a {
+    cursor: pointer;
+  }
+}

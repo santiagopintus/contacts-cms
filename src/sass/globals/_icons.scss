@@ -1,0 +1,10 @@
+/* Defines the logo img */
+i.tomate {
+  content: url(../public/assets/icons/tomato.svg);
+}
+i.logo {
+  @extend .tomate;
+}
+i.spinner {
+  @extend .tomate;
+}

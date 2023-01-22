@@ -1,0 +1,52 @@
+/* WITH THIS RULE, 1rem = 10px */
+html {
+  font-size: 62.5%;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+/* NORMALIZING */
+*, *:before, *:after {
+  box-sizing: border-box;
+  font-family: $font;
+  color: $textColor;
+}
+/* BODY */
+body {
+  font-size: $fs;
+  font-family: $font;
+}
+
+/* HEADINGS */
+h1,h2,h3,h4,h5,h6 {
+  font-family: $titleFont;
+}
+h1 {
+  font-size: $h1Fs;
+}
+h2 {
+  font-size: $h2Fs;
+}
+h3 {
+  font-size: $h3Fs;
+}
+h4 {
+  font-size: $h4Fs;
+}
+
+@include desktop {
+  h1 {
+    font-size: $h1FsDesktop;
+  }
+  h2 {
+    font-size: $h2FsDesktop;
+  }
+  h3 {
+    font-size: $h3FsDesktop;
+  }
+  h4 {
+    font-size: $h4FsDesktop;
+  }
+
+}
