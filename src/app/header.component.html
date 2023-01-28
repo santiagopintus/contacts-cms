@@ -11,13 +11,15 @@
         <li><a (click)="onSelected('contacts')">Contacts</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
+        <li class="dropdown" data-toggle="dropdown" (click)="toggle()">
           <a href="#" class="dropdown-toggle"
             >User <span class="caret"></span
           ></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Save Data</a></li>
-            <li><a href="#">Fetch Data</a></li>
+          <ul class="dropdown-menu" *ngIf="showMenu">
+            <li><a href="#">Login</a></li>
+            <li><a href="#">Other</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Logout</a></li>
           </ul>
         </li>
       </ul>

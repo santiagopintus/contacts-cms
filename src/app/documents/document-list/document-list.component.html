@@ -1,11 +1,15 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h2>Add Documents</h2>
-    <button class="btn btn-success">Add Document</button>
+    <h2>Documents</h2>
+    <button class="btn btn-success">New Document</button>
   </div>
   <div class="panel-body">
-    <div class="center-panel">
-      <cms-document-item></cms-document-item>
+    <div class="center-panel documents-container">
+      <cms-document-item
+        *ngFor="let document of documents"
+        [document]="document"
+        (click)="onSelected(document)"
+      ></cms-document-item>
     </div>
   </div>
 </div>

@@ -7,10 +7,15 @@ import { Component, Output, EventEmitter } from '@angular/core';
 })
 export class HeaderComponent {
   @Output() selectedFeatureEvent = new EventEmitter<string>();
-  selectedFeature: string = "documents";
+  selectedFeature: string = 'documents';
+  showMenu = false;
 
   onSelected(feature: string) {
     this.selectedFeature = feature;
     this.selectedFeatureEvent.emit(this.selectedFeature);
+  }
+
+  toggle() {
+    this.showMenu = !this.showMenu;
   }
 }
