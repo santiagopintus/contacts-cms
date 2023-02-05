@@ -1,11 +1,6 @@
-import {
-  Component,
-  Output,
-  EventEmitter,
-  ViewChild,
-  ElementRef,
-} from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { Message } from '../message.model';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'cms-message-edit',
@@ -14,18 +9,19 @@ import { Message } from '../message.model';
 })
 export class MessageEditComponent {
   message: Message = new Message('', '', '', '');
-  sender: string = 'Santiago Pintus';
-
-  @Output() addMessageEvent = new EventEmitter<Message>();
+  /* MY OWN CONTACT ID */
+  sender: string = '0';
 
   onSendMessage() {
     this.message.sender = this.sender;
-    this.message.id = "1234567890";
-    this.addMessageEvent.emit(this.message);
+    this.message.id = '1234567890';
+    this.messageService.addMessage(this.message);
   }
 
   onClear(formRef: any) {
     this.message = new Message('', '', '', '');
     formRef.resetForm();
   }
+
+  constructor(private messageService: MessageService) {}
 }
