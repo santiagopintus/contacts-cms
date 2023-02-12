@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'cms-header',
@@ -6,14 +6,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  @Output() selectedFeatureEvent = new EventEmitter<string>();
-  selectedFeature: string = 'documents';
   showMenu = false;
-
-  onSelected(feature: string) {
-    this.selectedFeature = feature;
-    this.selectedFeatureEvent.emit(this.selectedFeature);
-  }
 
   toggle() {
     this.showMenu = !this.showMenu;
