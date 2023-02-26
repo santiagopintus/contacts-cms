@@ -31,7 +31,6 @@ export class DocumentDetailComponent implements OnInit {
 
   onView() {
     const url = this.document?.url;
-    console.log(url);
     this.nativeWindow.open(url);
   }
   onDelete() {

@@ -6,6 +6,10 @@
   <div class="panel-body">
     <!-- Detect on click -->
     <cms-contact-item
+      dnd-draggable
+      [dragEnabled]="true"
+      [dragData]="contact"
+      [dropZones]="['contactGroup']"
       *ngFor="let contact of contacts"
       [contact]="contact"
     ></cms-contact-item>

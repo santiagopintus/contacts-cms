@@ -25,7 +25,7 @@ export class ContactService {
   //Getting one contact
   getContact(id: string): Contact | null {
     let contact = this.contacts.find((c) => c.id === id);
-    return contact ? contact : null;
+    return contact ? { ...contact } : null;
   }
 
   /* Returns the maximum id in the contacts list */
@@ -62,13 +62,16 @@ export class ContactService {
       return;
     }
     /* Get index of editing contact */
-    const i = this.contacts.indexOf(contact);
-    if (i < 0) {
-      return;
-    }
+    const currentContact = this.contacts.find((c) => c.id === contact.id);
+    if (currentContact) {
+      const i = this.contacts.indexOf(currentContact);
+      if (i < 0) {
+        return;
+      }
 
-    this.contacts[i] = Object.assign({}, contact);
-    this.contactListChangedEvent.next(this.contacts.slice());
+      this.contacts[i] = contact;
+      this.contactListChangedEvent.next(this.contacts.slice());
+    }
   }
 
   //Removing a contact
@@ -76,13 +79,16 @@ export class ContactService {
     if (!contact) {
       return;
     }
-    const pos = this.contacts.indexOf(contact);
-    /* Check if contact exists first */
-    if (pos < 0) {
-      return;
+    const contactToDelete = this.contacts.find((c) => c.id === contact.id);
+    if (contactToDelete) {
+      const pos = this.contacts.indexOf(contactToDelete);
+      /* Check if contact exists first */
+      if (pos < 0) {
+        return;
+      }
+      /* Remove contact and emit event */
+      this.contacts.splice(pos, 1);
+      this.contactListChangedEvent.next(this.contacts.slice());
     }
-    /* Remove contact and emit event */
-    this.contacts.splice(pos, 1);
-    this.contactListChangedEvent.next(this.contacts.slice());
   }
 }
