@@ -11,7 +11,11 @@ import { Subscription } from 'rxjs';
 export class ContactListComponent {
   @Output() selectedContactEvent: EventEmitter<Contact> =
     new EventEmitter<Contact>();
+  term: string = '';
 
+  search(value: string) {
+    this.term = value;
+  }
   onSelected(contact: Contact): void {
     this.contactService.contactSelectedEvent.emit(contact);
   }

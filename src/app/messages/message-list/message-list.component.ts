@@ -8,8 +8,6 @@ import { MessageService } from '../message.service';
   styleUrls: ['./message-list.component.scss'],
 })
 export class MessageListComponent {
-  // @Input() newMessage: Message = new Message('', '', '', '');
-
   @Output() selectedMessageEvent: EventEmitter<Message> =
     new EventEmitter<Message>();
 
@@ -23,8 +21,10 @@ export class MessageListComponent {
 
   ngOnInit() {
     this.messages = this.messageService.getMessages();
-    this.messageService.messageChangedEvent.subscribe((messages: Message[]) => {
-      this.messages = messages;
-    });
+    this.messageService.messageListChangedEvent.subscribe(
+      (messages: Message[]) => {
+        this.messages = messages;
+      }
+    );
   }
 }

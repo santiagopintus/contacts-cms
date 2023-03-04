@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Contact } from './contact.model';
-import { MOCKCONTACTS } from './MOCKCONTACTS';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -9,12 +9,30 @@ import { Subject } from 'rxjs';
 export class ContactService {
   contacts: Contact[] = [];
   maxContactId: number;
+  contactsUrl: string =
+    'https://wdd430-fb749-default-rtdb.firebaseio.com/contacts.json';
   contactSelectedEvent = new EventEmitter<Contact>();
   contactListChangedEvent = new Subject<Contact[]>();
 
-  constructor() {
-    this.contacts = MOCKCONTACTS;
+  constructor(private http: HttpClient) {
     this.maxContactId = this.getMaxId();
+
+    this.getContactsFromServer().subscribe(
+      (contacts: Contact[]) => {
+        this.contacts = contacts;
+        this.maxContactId = this.getMaxId();
+        this.contacts.sort((a, b) => a.name.localeCompare(b.name));
+        this.contactListChangedEvent.next(this.contacts.slice());
+      },
+      (error: any) => {
+        console.log(error);
+      }
+    );
+  }
+
+  /* FUNCTIONS */
+  getContactsFromServer() {
+    return this.http.get<Contact[]>(this.contactsUrl);
   }
 
   //Getting all contacts
@@ -25,7 +43,16 @@ export class ContactService {
   //Getting one contact
   getContact(id: string): Contact | null {
     let contact = this.contacts.find((c) => c.id === id);
-    return contact ? { ...contact } : null;
+    return contact || null;
+  }
+  getIndex(contact: Contact): number {
+    /* Looks the index of the contact to update */
+    const i = this.contacts.findIndex((c) => c.id === contact.id);
+    /* Checks if it exists */
+    if (i < 0) {
+      throw Error(`Contact ${contact.name} not found`);
+    }
+    return i;
   }
 
   /* Returns the maximum id in the contacts list */
@@ -42,7 +69,21 @@ export class ContactService {
     return maxId;
   }
 
-  /* ADD A DOCUMENT */
+  /* Store new Contacts */
+  storeContacts() {
+    const contactsString = JSON.stringify(this.contacts);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    this.http
+      .put(this.contactsUrl, contactsString, { headers: headers })
+      .subscribe(() => {
+        this.contactListChangedEvent.next([...this.contacts]);
+      });
+  }
+
+  /* ADD A CONTACT */
   addContact(newContact: Contact): void {
     if (!newContact) {
       return;
@@ -51,44 +92,31 @@ export class ContactService {
     this.maxContactId++;
     newContact.id = this.maxContactId.toString();
     this.contacts.push(newContact);
-
-    const contactsListClone = [...this.contacts];
-    this.contactListChangedEvent.next(contactsListClone);
+    this.storeContacts();
   }
 
-  /* UPDATE A DOCUMENT */
+  /* UPDATE A CONTACT */
   updateContact(contact: Contact) {
+    /* Checks if contacts is defined */
     if (!contact) {
       return;
     }
-    /* Get index of editing contact */
-    const currentContact = this.contacts.find((c) => c.id === contact.id);
-    if (currentContact) {
-      const i = this.contacts.indexOf(currentContact);
-      if (i < 0) {
-        return;
-      }
-
-      this.contacts[i] = contact;
-      this.contactListChangedEvent.next(this.contacts.slice());
-    }
+    const i = this.getIndex(contact);
+    if (i < 0) return;
+    /* Update the contact in the array and in the DB */
+    this.contacts[i] = { ...contact };
+    this.storeContacts();
   }
 
-  //Removing a contact
+  /* DELETE A CONTACT */
   deleteContact(contact: Contact | null) {
     if (!contact) {
       return;
     }
-    const contactToDelete = this.contacts.find((c) => c.id === contact.id);
-    if (contactToDelete) {
-      const pos = this.contacts.indexOf(contactToDelete);
-      /* Check if contact exists first */
-      if (pos < 0) {
-        return;
-      }
-      /* Remove contact and emit event */
-      this.contacts.splice(pos, 1);
-      this.contactListChangedEvent.next(this.contacts.slice());
-    }
+    const i = this.getIndex(contact);
+    if (i < 0) return;
+    /* Remove contact and update DB */
+    this.contacts.splice(i, 1);
+    this.storeContacts();
   }
 }

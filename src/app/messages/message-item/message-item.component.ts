@@ -10,14 +10,20 @@ import { Message } from '../message.model';
 })
 export class MessageItemComponent implements OnInit {
   @Input() message: Message = new Message('', '', '', '');
-  messageSender: string | null = '';
+  messageSender: string = '';
 
   constructor(private contactService: ContactService) {}
+  ngOnInit(): void {
+    this.getMessageSender();
+    // Listen to the contacts loaded event
+    this.contactService.contactListChangedEvent.subscribe(() => {
+      this.getMessageSender();
+    });
+  }
 
-  ngOnInit() {
-    const contact: Contact | null = this.contactService.getContact(
-      this.message.sender
-    );
-    contact ? (this.messageSender = contact.name) : '';
+  // Get the contact for this message
+  getMessageSender() {
+    this.messageSender =
+      this.contactService.getContact(this.message.sender)?.name || 'Unknown';
   }
 }

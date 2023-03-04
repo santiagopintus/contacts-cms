@@ -20,6 +20,7 @@ import { ContactEditComponent } from './contacts/contact-edit/contact-edit.compo
 import { HttpClientModule } from '@angular/common/http';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DndModule } from 'ng2-dnd';
+import { ContactsFilterPipe } from './contacts/contacts-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { DndModule } from 'ng2-dnd';
     MessageListComponent,
     DocumentEditComponent,
     ContactEditComponent,
+    ContactsFilterPipe,
   ],
   imports: [
     BrowserModule,

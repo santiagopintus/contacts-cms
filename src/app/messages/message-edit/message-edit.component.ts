@@ -10,14 +10,12 @@ import { MessageService } from '../message.service';
 export class MessageEditComponent {
   message: Message = new Message('', '', '', '');
   /* MY OWN CONTACT ID */
-  sender: string = '0';
+  sender: string = '20';
 
   onSendMessage() {
     this.message.sender = this.sender;
-    this.message.id = '1234567890';
     this.messageService.addMessage(this.message);
   }
-
   onClear(formRef: any) {
     this.message = new Message('', '', '', '');
     formRef.resetForm();

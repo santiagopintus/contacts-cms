@@ -1,7 +1,23 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h2>Contacts</h2>
-    <button class="btn btn-success" [routerLink]="['new']">New Contact</button>
+    <div class="input-n-button">
+      <div class="input-group">
+        <!-- Search input -->
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter a search value"
+          #searchBox
+          (keyup)="search(searchBox.value)"
+        />
+        <div
+          class="glyphicon glyphicon-search input-group-addon"
+          (click)="search(searchBox.value)"
+        ></div>
+      </div>
+      <a class="btn btn-success" [routerLink]="['new']">New Contact</a>
+    </div>
   </div>
   <div class="panel-body">
     <!-- Detect on click -->
@@ -10,7 +26,7 @@
       [dragEnabled]="true"
       [dragData]="contact"
       [dropZones]="['contactGroup']"
-      *ngFor="let contact of contacts"
+      *ngFor="let contact of contacts | contactsFilter : term"
       [contact]="contact"
     ></cms-contact-item>
   </div>

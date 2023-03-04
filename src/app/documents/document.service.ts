@@ -1,25 +1,40 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Document } from './document.model';
-import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DocumentService {
-  private documents: Document[] = MOCKDOCUMENTS;
+  private documents: Document[] = [];
   maxDocumentId: number;
-
-  constructor() {
-    this.maxDocumentId = this.getMaxId();
-  }
-
   /* EVENTS */
   documentSelectedEvent = new EventEmitter<Document>();
   documentListChangedEvent = new Subject<Document[]>();
 
-  /* -------FUNCTIONS------ */
+  constructor(private http: HttpClient) {
+    this.maxDocumentId = this.getMaxId();
 
+    this.getDocumentsFromServer().subscribe(
+      (documents: Document[]) => {
+        this.documents = documents;
+        this.maxDocumentId = this.getMaxId();
+        this.documents.sort((a, b) => a.name.localeCompare(b.name));
+        this.documentListChangedEvent.next(this.documents.slice());
+      },
+      (error: any) => {
+        console.log(error);
+      }
+    );
+  }
+
+  /* -------FUNCTIONS------ */
+  getDocumentsFromServer() {
+    return this.http.get<Document[]>(
+      'https://wdd430-fb749-default-rtdb.firebaseio.com/documents.json'
+    );
+  }
   /* GET DOCUMENT/S */
   getDocuments() {
     return this.documents.slice();
@@ -27,6 +42,17 @@ export class DocumentService {
   getDocument(id: string): Document | null {
     let doc = this.documents.find((d) => d.id === id);
     return doc ? doc : null;
+  }
+  getIndex(document: Document): number {
+    /* Looks the index of the document */
+    console.log(this.documents.find((d) => d.id === document.id));
+    const i = this.documents.findIndex((d) => d.id === document.id);
+    /* Checks if it exists */
+    if (i < 0) {
+      throw Error(`Document ${document.name} not found`);
+    }
+    console.log(i);
+    return i;
   }
 
   /* Returns the maximum id in the documents list */
@@ -43,6 +69,25 @@ export class DocumentService {
     return maxId;
   }
 
+  /* Store new Documents */
+  storeDocuments() {
+    console.log('STORING DOC');
+    const documentsString = JSON.stringify(this.documents);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    this.http
+      .put(
+        'https://wdd430-fb749-default-rtdb.firebaseio.com/documents.json',
+        documentsString,
+        { headers: headers }
+      )
+      .subscribe(() => {
+        this.documentListChangedEvent.next([...this.documents]);
+      });
+  }
+
   /* ADD A DOCUMENT */
   addDocument(newDocument: Document): void {
     if (!newDocument) {
@@ -52,24 +97,20 @@ export class DocumentService {
     this.maxDocumentId++;
     newDocument.id = this.maxDocumentId.toString();
     this.documents.push(newDocument);
-
-    const documentsListClone = [...this.documents];
-    this.documentListChangedEvent.next(documentsListClone);
+    this.storeDocuments();
   }
 
   /* UPDATE A DOCUMENT */
   updateDocument(document: Document) {
+    /* Checks if document is defined */
     if (!document) {
       return;
     }
-    /* Get index of editing document */
-    const i = this.documents.indexOf(document);
-    if (i < 0) {
-      return;
-    }
-
+    /* Looks the index of the document to update */
+    const i = this.getIndex(document);
+    if (i < 0) return;
     this.documents[i] = Object.assign({}, document);
-    this.documentListChangedEvent.next(this.documents.slice());
+    this.storeDocuments();
   }
 
   /* DELETE A DOCUMENT */
@@ -77,13 +118,11 @@ export class DocumentService {
     if (!document) {
       return;
     }
-    const pos = this.documents.indexOf(document);
-    /* Check if document exists first */
-    if (pos < 0) {
-      return;
-    }
+    const i = this.getIndex(document);
+    console.log(i);
+    if (i < 0) return;
     /* Remove document and emit event */
-    this.documents.splice(pos, 1);
-    this.documentListChangedEvent.next(this.documents.slice());
+    this.documents.splice(i, 1);
+    this.storeDocuments();
   }
 }
