@@ -8,8 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class MessageService {
   private messages: Message[] = [];
   maxMessageId: number;
-  messagesUrl: string =
-    'https://wdd430-fb749-default-rtdb.firebaseio.com/messages.json';
+  messagesUrl: string = 'http://localhost:3000/messages';
   messageSelectedEvent = new EventEmitter<Message>();
   messageListChangedEvent = new EventEmitter<Message[]>();
 
@@ -47,20 +46,6 @@ export class MessageService {
     return maxId;
   }
 
-  /* Store new Messages */
-  storeMessages() {
-    const messagesString = JSON.stringify(this.messages);
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-
-    this.http
-      .put(this.messagesUrl, messagesString, { headers: headers })
-      .subscribe(() => {
-        this.messageListChangedEvent.next([...this.messages]);
-      });
-  }
-
   getMessages() {
     return this.messages.slice();
   }
@@ -70,8 +55,19 @@ export class MessageService {
   }
   addMessage(msg: Message) {
     let newMessage = { ...msg };
-    newMessage.id = (this.getMaxId() + 1).toString();
-    this.messages.push(newMessage);
-    this.storeMessages();
+
+    /* Ensure id is empty */
+    newMessage.id = '';
+    /* Sends the new message to the server */
+    newMessage.id = '';
+    this.http.post(this.messagesUrl, newMessage).subscribe((data: any) => {
+      let message = data.message;
+      if (message) {
+        /* Updates the local messages list with the new message */
+        this.messages.push(newMessage);
+
+        this.messageListChangedEvent.next([...this.messages]);
+      }
+    });
   }
 }

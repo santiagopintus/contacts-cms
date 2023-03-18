@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Document } from './document.model';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -8,18 +8,15 @@ import { Subject } from 'rxjs';
 })
 export class DocumentService {
   private documents: Document[] = [];
-  maxDocumentId: number;
   /* EVENTS */
   documentSelectedEvent = new EventEmitter<Document>();
   documentListChangedEvent = new Subject<Document[]>();
+  private documentsUrl: string = 'http://localhost:3000/documents';
 
   constructor(private http: HttpClient) {
-    this.maxDocumentId = this.getMaxId();
-
     this.getDocumentsFromServer().subscribe(
       (documents: Document[]) => {
         this.documents = documents;
-        this.maxDocumentId = this.getMaxId();
         this.documents.sort((a, b) => a.name.localeCompare(b.name));
         this.documentListChangedEvent.next(this.documents.slice());
       },
@@ -31,9 +28,7 @@ export class DocumentService {
 
   /* -------FUNCTIONS------ */
   getDocumentsFromServer() {
-    return this.http.get<Document[]>(
-      'https://wdd430-fb749-default-rtdb.firebaseio.com/documents.json'
-    );
+    return this.http.get<Document[]>(this.documentsUrl);
   }
   /* GET DOCUMENT/S */
   getDocuments() {
@@ -45,47 +40,12 @@ export class DocumentService {
   }
   getIndex(document: Document): number {
     /* Looks the index of the document */
-    console.log(this.documents.find((d) => d.id === document.id));
     const i = this.documents.findIndex((d) => d.id === document.id);
     /* Checks if it exists */
     if (i < 0) {
       throw Error(`Document ${document.name} not found`);
     }
-    console.log(i);
     return i;
-  }
-
-  /* Returns the maximum id in the documents list */
-  getMaxId(): number {
-    let maxId = 0;
-
-    for (const document of this.documents) {
-      const currentId = parseInt(document.id, 10);
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
-    }
-
-    return maxId;
-  }
-
-  /* Store new Documents */
-  storeDocuments() {
-    console.log('STORING DOC');
-    const documentsString = JSON.stringify(this.documents);
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-
-    this.http
-      .put(
-        'https://wdd430-fb749-default-rtdb.firebaseio.com/documents.json',
-        documentsString,
-        { headers: headers }
-      )
-      .subscribe(() => {
-        this.documentListChangedEvent.next([...this.documents]);
-      });
   }
 
   /* ADD A DOCUMENT */
@@ -93,11 +53,16 @@ export class DocumentService {
     if (!newDocument) {
       return;
     }
-    /* Creates new id for the document */
-    this.maxDocumentId++;
-    newDocument.id = this.maxDocumentId.toString();
-    this.documents.push(newDocument);
-    this.storeDocuments();
+    /* Sends the new document to the server */
+    newDocument.id = '';
+    this.http.post(this.documentsUrl, newDocument).subscribe((data: any) => {
+      let document = data.document;
+      if (document) {
+        /* Updates the local documents list with the new document */
+        this.documents.push(document);
+        this.documentListChangedEvent.next([...this.documents]);
+      }
+    });
   }
 
   /* UPDATE A DOCUMENT */
@@ -109,8 +74,13 @@ export class DocumentService {
     /* Looks the index of the document to update */
     const i = this.getIndex(document);
     if (i < 0) return;
-    this.documents[i] = Object.assign({}, document);
-    this.storeDocuments();
+    /* Sends the updated document to the server */
+    this.http
+      .put(`${this.documentsUrl}/${document.id}`, document)
+      .subscribe(() => {
+        this.documents[i] = Object.assign({}, document);
+        this.documentListChangedEvent.next([...this.documents]);
+      });
   }
 
   /* DELETE A DOCUMENT */
@@ -119,10 +89,12 @@ export class DocumentService {
       return;
     }
     const i = this.getIndex(document);
-    console.log(i);
     if (i < 0) return;
-    /* Remove document and emit event */
-    this.documents.splice(i, 1);
-    this.storeDocuments();
+    /* Sends a delete request for the document to the server */
+    this.http.delete(`${this.documentsUrl}/${document.id}`).subscribe(() => {
+      /* Remove document and emit event */
+      this.documents.splice(i, 1);
+      this.documentListChangedEvent.next([...this.documents]);
+    });
   }
 }

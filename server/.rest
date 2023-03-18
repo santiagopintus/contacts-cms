@@ -1,0 +1,98 @@
+#################################
+############# GET ###############
+#################################
+
+### Documents
+http://localhost:3000/documents
+
+### Messages
+http://localhost:3000/messages
+
+###Contacts
+http://localhost:3000/contacts
+
+
+
+#################################
+############# POST ###############
+#################################
+
+### Contacts
+POST http://localhost:3000/contacts
+Content-Type: application/json
+
+{
+  "name": "Brad Pitt",
+  "email": "john.doe@example.com",
+  "phone": "1234-7890",
+  "imageUrl": "https://via.placeholder.com/150"
+}
+
+### Documents
+POST http://localhost:3000/documents
+Content-Type: application/json
+
+{
+  "name": "This is a new THIRD document",
+  "url": "https://Example.com",
+  "description": "This document is an examplr"
+}
+
+### Messages
+POST http://localhost:3000/messages
+Content-Type: application/json
+
+{
+  "subject": "Example message!",
+  "msgText": "As you can see, this is a message example for testing",
+  "sender": "64150fc5d1a5e649613d0330"
+}
+
+
+
+#################################
+############# PUT ###############
+#################################
+
+
+### Documents
+PUT http://localhost:3000/documents/103
+Content-Type: application/json
+
+{
+  "name": "This is an EDITED document",
+  "description": "Updated document description"
+}
+
+### Messages
+PUT http://localhost:3000/messages/101
+Content-Type: application/json
+
+{
+  "subject": "Updated message subject",
+  "text": "Updated message text"
+}
+
+### Contacts
+PUT http://localhost:3000/contacts/103
+Content-Type: application/json
+
+{
+  "name": "Harry Potter",
+  "email": "harry.potter@example.com",
+  "phone": "1234-6784",
+  "imageUrl": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/harry-potter-set-1614674828.jpg"
+}
+
+
+
+#################################
+############ DELETE #############
+#################################
+
+### DOCUMENTS
+DELETE http://localhost:3000/documents/104
+### MESSAGES
+DELETE http://localhost:3000/messages/108
+### CONTACTS
+DELETE http://localhost:3000/contacts/:id

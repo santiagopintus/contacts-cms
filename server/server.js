@@ -5,7 +5,8 @@ const http = require("http");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-
+const db = require("./db");
+const cors = require("cors");
 // import the routing file to handle the default (index) route
 const index = require("./routes/app");
 
@@ -24,19 +25,7 @@ app.use(cookieParser());
 
 app.use(logger("dev")); // Tell express to use the Morgan logger
 
-// Add support for CORS
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, PUT, DELETE, OPTIONS"
-  );
-  next();
-});
+app.use(cors());
 
 // Tell express to use the specified director as the
 // root directory for your web site

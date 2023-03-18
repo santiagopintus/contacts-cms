@@ -10,8 +10,8 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
   styleUrls: ['./contact-edit.component.scss'],
 })
 export class ContactEditComponent implements OnInit {
-  originalContact: Contact = new Contact('0', '', '', '', '', null);
-  contact: Contact = new Contact('0', '', '', '', '', null);
+  originalContact: Contact = new Contact('', '', '', '', '', null);
+  contact: Contact = new Contact('', '', '', '', '', null);
   groupContacts: Contact[] = [];
   editMode = false;
   dropError = false;

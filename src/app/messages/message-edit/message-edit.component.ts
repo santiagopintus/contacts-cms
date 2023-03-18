@@ -10,7 +10,7 @@ import { MessageService } from '../message.service';
 export class MessageEditComponent {
   message: Message = new Message('', '', '', '');
   /* MY OWN CONTACT ID */
-  sender: string = '20';
+  sender: string = '101';
 
   onSendMessage() {
     this.message.sender = this.sender;

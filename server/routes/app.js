@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const sequenceGenerator = require("./sequenceGenerator");
 const path = require("path");
 
 /* GET home page. */
